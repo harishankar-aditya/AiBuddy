@@ -16,6 +16,7 @@ load_dotenv()
 from api.authorization import endpoints as AuthorizationEndpoints
 from api.pulse_buddy import endpoints as PulseBuddyChatEndpoints
 from api.pulse_video_research import endpoints as PulseVideoResearchChatEndpoints
+from api.authorization.otp.validate_token import validate_access_token
 from config import variables
 
 
@@ -41,22 +42,36 @@ app.add_middleware(
 
 
 @app.get("/", response_class=HTMLResponse)
-async def main(request: Request):
-    return templates.TemplateResponse("home.html", {"request": request})
+async def main(request: Request, access_token: str = Cookie(None), response: Response = Response()):
+    if access_token:
+        return RedirectResponse(url="/profile")
+    else:
+        return templates.TemplateResponse("home.html", {"request": request})
+    # return templates.TemplateResponse("home.html", {"request": request})
 
 
 @app.get("/home", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("home.html", {"request": request})
+async def home(request: Request, access_token: str = Cookie(None), response: Response = Response()):
+    if access_token:
+        return RedirectResponse(url="/profile")
+    else:
+        return templates.TemplateResponse("home.html", {"request": request})
+    # return templates.TemplateResponse("home.html", {"request": request})
 
 
 @app.get("/profile", response_class=HTMLResponse)
-async def profile(request: Request):
-    return templates.TemplateResponse("chatbot.html", {"request": request})
-
-
-
-
+async def profile(request: Request, access_token: str = Cookie(None), response: Response = Response()):
+    if access_token:
+        token_response = validate_access_token(access_token)
+        if token_response["data"] is not None:
+            return templates.TemplateResponse("chatbot.html", {"request": request})
+        else:
+            response = templates.TemplateResponse("home.html", {"request": request})
+            response.delete_cookie(key="access_token")
+            return response
+    else:
+        return RedirectResponse(url="/home")
+    # return templates.TemplateResponse("chatbot.html", {"request": request})
 
 
 app.include_router(

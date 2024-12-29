@@ -15,6 +15,7 @@ from typing import Optional
 from commons.utils import convert_to_standard_types
 from api.authorization.otp.send_otp import send_otp_to_email
 from api.authorization.otp.validate_otp import validate_user_otp
+from api.authorization.otp.validate_token import validate_access_token
 
 
 from fastapi.responses import StreamingResponse
@@ -59,6 +60,20 @@ async def sendOTP(body_param: OTPAuthModel = Body(...)):
 async def validateOTP(body_param: ValidateOTPAuthModel = Body(...)):
     logging.info(body_param)
     response = validate_user_otp(str(body_param.username), str(body_param.email), str(body_param.otp), body_param.request_id)
+
+    if response["status_code"] == 200:
+        return convert_to_standard_types(response)
+    else:
+        raise HTTPException(
+            status_code=response["status_code"],
+            detail=convert_to_standard_types(response),
+        )
+    
+
+@router.get("/validate-token/")
+async def validateToken(access_token: str):
+    logging.info(f"Access Token: {access_token}")
+    response = validate_access_token(access_token)
 
     if response["status_code"] == 200:
         return convert_to_standard_types(response)
