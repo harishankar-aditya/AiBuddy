@@ -189,7 +189,7 @@ def extract_visible_text_from_webpage(url: str) -> str:
     
 
 @tool
-def fetch_youtube_video_transcript(youtube_url: str) -> str|dict:
+def fetch_youtube_video_transcript(youtube_url: str) -> str:
     """
     Fetches the transcript of a YouTube video along with timestamps for each segment.  
     This tool is useful for extracting textual content from YouTube videos to analyze or summarize their content.
