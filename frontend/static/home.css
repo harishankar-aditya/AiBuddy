@@ -5,9 +5,12 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to bottom right, #e0eafc, #cfdef3); /* Example gradient */
+    background: url("images/bgimage.png"); /* Example gradient */
     margin: 0;
+    background-size: cover;
+
 }
+
 
 .container {
     display: flex;
@@ -18,11 +21,13 @@ body {
 }
 
 .login-box {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.786);
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center; /* Center the content */
+    width: 25%;
+    justify-items: center;
 }
 
 .logo {
@@ -32,10 +37,15 @@ body {
     color: orange;
 
 }
-
+.logo-svg {
+    top: 20px;
+    left: 20px;
+    position: absolute;
+}
 .input-group {
     margin-bottom: 15px;
     display: flex;
+    width: 100%;
 }
 
 input[type="email"], input[type="text"] {
@@ -44,6 +54,8 @@ input[type="email"], input[type="text"] {
     border-radius: 4px;
     flex-grow: 1;
     margin-right: 5px;
+    height: 25px;
+    margin-bottom: 10px;
 }
 
 .input-group input:disabled {
@@ -61,10 +73,16 @@ button {
     display: inline-block;
     font-size: 16px;
     border-radius: 4px;
+    width: 150px;
+    height: 3rem;
     cursor: pointer;
 }
+
+
+
 
 #message {
     margin-top: 10px;
     color: red;
 }
+
