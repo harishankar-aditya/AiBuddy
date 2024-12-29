@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sophius AI Buddy</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="frontend/static/chatbot.css">
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div class="history-panel" id="sidebar">
+            <div class="history-panel-title">Your History</div>
+            <div class="history-section">
+                <h4>Today</h4>
+                <ul>
+                    <li class="active">Not feeling good! 😔🥺</li>
+                    <li>Feeling Blue: How to Cope with Temporary Sadness 😔</li>
+                </ul>
+            </div>
+            <div class="history-section">
+                <h4>Yesterday</h4>
+                <ul>
+                    <li>Up and Down: Navigating Emotional Rollercoasters</li>
+                    <li>Beyond the Surface: Understanding and Addressing Underlying Issues</li>
+                </ul>
+            </div>
+            <div class="history-section">
+                <h4>This Month</h4>
+                <ul>
+                    <li>The Art of Self-Care: Nurturing Your Mind, Body, and Soul</li>
+                    <li>Breaking Free from Negative Thoughts: Strategies for Positive Thinking</li>
+                    <li>The Power of Connection: Building Strong Relationships for Emotional Well-being</li>
+                    <li>Finding Your Joy: Rediscovering Happiness in Everyday Life</li>
+                    <li>Professional Help: When to Seek Therapy and Counseling</li>
+                </ul>
+            </div>
+            <button class="collapse-btn" onclick="toggleSidebar()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <path d="M16 19L8 12l8-7v14z"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="chat-area">
+            <div class="chat-header-2">
+                <img src="/frontend/static/images/hugging-gif.gif" alt="Before GIF" class="chat-header-gif-1">
+                <div class="chat-header">Sophius AI Buddy</div>
+                <img src="/frontend/static/images/hugging-gif.gif" alt="After GIF" class="chat-header-gif-2">
+            </div>
+
+            <div class="session-time" id="sessionTime"></div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="placeholder" id="placeholder">Hi, I am Your AI Buddy. How can I help you today!</div>
+            </div>
+            <div class="chat-input-container">
+                <input class="chat-input" type="text" placeholder="Type a message" id="chatInput"
+                    onkeydown="checkEnter(event)">
+                <button class="send-button" id="sendButton" onclick="sendMessage()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3v7l15 2-15 2z" />
+                    </svg>
+                </button>
+                <div class="loader" id="loader">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="30" height="30"></svg>
+                </div>
+            </div>
+        </div>
+        <button class="scroll-button" id="scrollButton" onclick="scrollToLatest()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 15l-7-7h14l-7 7z" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const scrollButton = document.getElementById('scrollButton');
+        const placeholder = document.getElementById('placeholder');
+        const userID = generateUUID();
+        const threadID = generateUUID();
+        const sendButton = document.getElementById('sendButton');
+        const loader = document.getElementById('loader');
+
+        document.getElementById('sessionTime').textContent = `Session started: ${new Date().toLocaleString()}`;
+
+        function toggleSidebar() {
+            document.getElementById('container').classList.toggle('collapsed');
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            if (input.value.trim() === '') return;
+
+            const userMessage = input.value;
+            addMessage('user', userMessage);
+            input.value = '';
+            placeholder.style.display = 'none';
+
+            loader.style.display = 'block';
+            sendButton.disabled = true;
+
+            try {
+                const response = await fetch('/api/pulse-buddy/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: userMessage,
+                        user_id: userID,
+                        thread_id: threadID
+                    })
+                });
+
+                if (response.ok && response.body) {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let botMessage = '';
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+
+                        const chunk = decoder.decode(value, { stream: true });
+                        botMessage += chunk;
+                        updateBotMessage(botMessage); // Update message incrementally
+                    }
+
+                    finalizeBotMessage(botMessage); // Ensure the full message is handled
+                } else {
+                    addMessage('bot', 'Error: Unable to process your request.');
+                }
+            } catch (error) {
+                addMessage('bot', 'Error: Network issue or API unavailable.');
+            } finally {
+                loader.style.display = 'none';
+                sendButton.disabled = false;
+            }
+        }
+
+        function updateBotMessage(partialMessage) {
+            let lastBotBubble = chatMessages.querySelector('.message-bubble.bot:last-child');
+            if (!lastBotBubble) {
+                lastBotBubble = document.createElement('div');
+                lastBotBubble.className = 'message-bubble bot';
+                chatMessages.appendChild(lastBotBubble);
+            }
+            lastBotBubble.innerHTML = marked.parse(partialMessage);
+            autoScrollIfAtLatest();
+        }
+
+        function finalizeBotMessage(fullMessage) {
+            updateBotMessage(fullMessage); // Ensure the last update is rendered
+        }
+
+        function addMessage(type, message) {
+            const messageBubble = document.createElement('div');
+            messageBubble.className = `message-bubble ${type}`;
+            messageBubble.innerHTML = type === 'bot' ? marked.parse(message) : message;
+
+            const timestamp = document.createElement('span');
+            timestamp.className = 'timestamp';
+            timestamp.textContent = new Date().toLocaleTimeString();
+            messageBubble.appendChild(timestamp);
+
+            chatMessages.appendChild(messageBubble);
+            autoScrollIfAtLatest();
+        }
+
+        function autoScrollIfAtLatest() {
+            const isAtBottom = chatMessages.scrollTop + chatMessages.clientHeight >= chatMessages.scrollHeight - 1;
+            if (isAtBottom) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        function scrollToLatest() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+    </script>
+</body>
+
+</html>

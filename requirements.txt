@@ -1,0 +1,15 @@
+fastapi[all]
+tiktoken
+requests
+bs4
+youtube_transcript_api
+langchain_community
+langchain_openai
+langchain_core
+langgraph
+langgraph-checkpoint-postgres
+python-dotenv
+IPython
+pandas
+psycopg2
+

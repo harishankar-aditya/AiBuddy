@@ -1,0 +1,70 @@
+/* style.css */
+body {
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #e0eafc, #cfdef3); /* Example gradient */
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.login-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center the content */
+}
+
+.logo {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: orange;
+
+}
+
+.input-group {
+    margin-bottom: 15px;
+    display: flex;
+}
+
+input[type="email"], input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+    margin-right: 5px;
+}
+
+.input-group input:disabled {
+    opacity: 0.5; /* Fade effect for disabled inputs */
+    cursor: not-allowed;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#message {
+    margin-top: 10px;
+    color: red;
+}
