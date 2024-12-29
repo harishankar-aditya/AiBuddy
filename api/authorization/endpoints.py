@@ -26,16 +26,16 @@ router = APIRouter()
 
 
 class OTPAuthModel(BaseModel):
-    username: str|Any
-    email: str|Any
+    username: str
+    email: str
     request_id: str = str(uuid.uuid4())
     other_info: Optional[str] = None
 
 
 class ValidateOTPAuthModel(BaseModel):
-    username: str|Any
-    email: str|Any
-    otp: str|Any
+    username: str
+    email: str
+    otp: str
     request_id: str = str(uuid.uuid4())
     other_info: Optional[str] = None
 
