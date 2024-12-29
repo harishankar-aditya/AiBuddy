@@ -74,7 +74,7 @@ async def pulse_multi_llm_chat(query: str, user_id: str, thread_id: str):
             checkpointer = AsyncPostgresSaver(pool)
 
             # NOTE: you need to call .setup() the first time you're using your checkpointer
-            # await checkpointer.setup()
+            await checkpointer.setup()
 
             langgraph_agent_executor = create_react_agent(
                                                         model, 
