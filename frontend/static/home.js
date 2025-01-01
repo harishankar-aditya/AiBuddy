@@ -56,14 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
-
             if (response.status === 200) {
                 otpGroup.style.display = 'flex';
                 submitOtpButton.style.display = 'block';
                 getOtpButton.style.display = 'none';
                 displaySuccessMessage(data.message);
             } else {
-                displayErrorMessage(data.message);
+                displayErrorMessage(data.detail.message);
                 enableInputs();
             }
         } catch (error) {
@@ -93,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
-
             if (response.status === 200) {
                 if (data.status === "success" && data.data.length > 0) {
                     const { access_token, user_id, username, email, request_id } = data.data[0];
@@ -111,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     displayErrorMessage("Unexpected response data.");
                 }
             } else {
-                displaySuccessMessage(data.message);
+                displayErrorMessage(data.detail.message);
             }
         } catch (error) {
             console.error("Error:", error);
