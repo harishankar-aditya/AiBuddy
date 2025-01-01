@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const otpInput = document.getElementById('otp');
     const submitOtpButton = document.getElementById('submitOtp');
     const loaderOtp = document.getElementById('loaderOtp');
-    const messageDiv = document.getElementById('message');
+    const messageErrorDiv = document.getElementById('error-message');
+    const messageSuccessDiv = document.getElementById('success-message');
 
     function getCredentialsFromCookies() {
         const credentials = { username: '', email: '' };
@@ -33,12 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = emailInput.value;
 
         if (!username || !email) {
-            displayMessage("Please enter both username and email.");
+            displayErrorMessage("Please enter both username and email.");
             return;
         }
 
         if (!isValidEmail(email)) {
-            displayMessage("Please enter a valid email.");
+            displayErrorMessage("Please enter a valid email.");
             return;
         }
 
@@ -60,14 +61,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 otpGroup.style.display = 'flex';
                 submitOtpButton.style.display = 'block';
                 getOtpButton.style.display = 'none';
-                displayMessage(data.message);
+                displaySuccessMessage(data.message);
             } else {
-                displayMessage(data.message);
+                displayErrorMessage(data.message);
                 enableInputs();
             }
         } catch (error) {
             console.error("Error:", error);
-            displayMessage("An error occurred.");
+            displayErrorMessage("An error occurred.");
             enableInputs();
         } finally {
             loaderOtp.style.display = 'none'; // Hide loader
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = emailInput.value;
 
         if (!otp || otp.length !== 6) {
-            displayMessage("Please enter a valid 6-digit OTP.");
+            displayErrorMessage("Please enter a valid 6-digit OTP.");
             return;
         }
 
@@ -107,19 +108,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Redirect to profile page
                     window.location.href = '/profile';
                 } else {
-                    displayMessage("Unexpected response data.");
+                    displayErrorMessage("Unexpected response data.");
                 }
             } else {
-                displayMessage(data.message);
+                displaySuccessMessage(data.message);
             }
         } catch (error) {
             console.error("Error:", error);
-            displayMessage("An error occurred.");
+            displayErrorMessage("An error occurred.");
         }
     });
 
-    function displayMessage(msg) {
-        messageDiv.textContent = msg;
+    // function displayMessage(msg) {
+    //     messageDiv.textContent = msg;
+    // }
+    function displayErrorMessage(msg) {
+        messageErrorDiv.textContent = msg;
+    }
+    function displaySuccessMessage(msg) {
+        messageSuccessDiv.textContent = msg;
     }
 
     function enableInputs() {

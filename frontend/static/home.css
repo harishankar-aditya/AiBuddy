@@ -94,9 +94,15 @@ button {
     width: 20%;
 }
 
-
-#message {
+#error-message {
     margin-top: 10px;
     color: red;
+    font-weight: bold;
+}
+
+#success-message {
+    margin-top: 10px;
+    color: green;
+    font-weight: bold;
 }
 
