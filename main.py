@@ -64,7 +64,7 @@ async def profile(request: Request, access_token: str = Cookie(None), response: 
     if access_token:
         token_response = validate_access_token(access_token)
         if token_response["data"] is not None:
-            return templates.TemplateResponse("chatbot.html", {"request": request})
+            return templates.TemplateResponse("chatbot.html", {"request": request, "username": token_response["data"][0]["username"]})
         else:
             response = templates.TemplateResponse("home.html", {"request": request})
             response.delete_cookie(key="access_token")
@@ -72,6 +72,14 @@ async def profile(request: Request, access_token: str = Cookie(None), response: 
     else:
         return RedirectResponse(url="/home")
     # return templates.TemplateResponse("chatbot.html", {"request": request})
+
+
+@app.post("/logout", response_class=HTMLResponse)
+async def logout(request: Request, response: Response, access_token: str = Cookie(None)):
+    response = templates.TemplateResponse("home.html", {"request": request})
+    if access_token is not None:
+        response.delete_cookie(key="access_token")
+    return response
 
 
 app.include_router(

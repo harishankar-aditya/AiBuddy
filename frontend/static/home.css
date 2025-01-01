@@ -63,9 +63,14 @@ input[type="email"], input[type="text"] {
     cursor: not-allowed;
 }
 
+
+
+
+
+
 button {
     padding: 10px 15px;
-    background-color: #4CAF50; /* Green */
+    background-color: #4CAF50;
     border: none;
     color: white;
     text-align: center;
@@ -79,6 +84,15 @@ button {
 }
 
 
+
+#loaderOtp {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    background-color: transparent;
+    width: 20%;
+}
 
 
 #message {

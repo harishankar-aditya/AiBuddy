@@ -335,19 +335,23 @@ body {
 
 .chat-header-gif-1 {
     width: 80px; /* Adjust size of the GIFs */
-    height: 80px;
+    height: 40px;
     margin-left: auto;
+    font-weight: bold;
+
   }
 
 .chat-header-gif-2 {
 width: 80px; /* Adjust size of the GIFs */
-height: 80px;
+height: 40px;
 margin-right: auto;
+font-weight: bold;
 }
 
 .chat-header-2 {
-display: flex;
-align-items: center;
-gap: 60px; /* Add space between elements */
+    display: flex;
+    align-items: center;
+    gap: 350px;
+    margin: auto;
 }
 /* <link rel="stylesheet" href="style.css"> */
