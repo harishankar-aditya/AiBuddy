@@ -210,7 +210,7 @@ def send_otp_to_email(username, email: str, otp: str, request_id: str):
                                                                             <p
                                                                                 style="line-height:24px;font-size:16px;margin:0;width:100%">
                                                                             </p>
-                                                                            Here’s Your Login OTP for Sophius Buddy is:
+                                                                            Here’s Your Login OTP for Sophius Buddy:
                                                                             <strong style="color: #F68529;">{otp}</strong>. The OTP is valid for 10 minutes.<br><br>
 
                                                                             <p
