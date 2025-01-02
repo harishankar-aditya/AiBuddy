@@ -157,6 +157,7 @@ async def pulse_multi_llm_chat(query: str, user_id: str, thread_id: str):
                         "message": "Success",
                         "data": res["messages"][-1].content,
                     }
+            # response = res["messages"][-1].content
             check = await checkpointer.aget(config)
             # print(check)
             return response

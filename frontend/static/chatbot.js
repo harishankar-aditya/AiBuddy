@@ -40,22 +40,25 @@ async function sendMessage() {
                 thread_id: threadID
             })
         });
-
+        const data = await response.json();
         if (response.ok && response.body) {
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let botMessage = '';
+            finalizeBotMessage(data.data);
+            // const reader = response.body.getReader();
+            // console.log('Response received:', response);
+            // console.log('Reader received:', reader);
+            // const decoder = new TextDecoder();
+            // let botMessage = '';
 
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
+            // while (true) {
+            //     const { done, value } = await reader.read();
+            //     if (done) break;
 
-                const chunk = decoder.decode(value, { stream: true });
-                botMessage += chunk;
-                updateBotMessage(botMessage); // Update message incrementally
-            }
+            //     const chunk = decoder.decode(value, { stream: true });
+            //     botMessage += chunk;
+            //     updateBotMessage(botMessage); // Update message incrementally
+            // }
 
-            finalizeBotMessage(botMessage); // Ensure the full message is handled
+            // finalizeBotMessage(botMessage); // Ensure the full message is handled
         } else {
             addMessage('bot', 'Error: Unable to process your request.');
         }

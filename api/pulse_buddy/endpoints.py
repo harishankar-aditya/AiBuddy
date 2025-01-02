@@ -37,7 +37,7 @@ async def chat_model(body_param: ChatModel = Body(...)):
     # response = asyncio.run(pulse_multi_llm_chat(str(body_param.query), str(body_param.user_id), str(body_param.thread_id)))
 
     if response["status_code"] == 200:
-        return convert_to_standard_types(response["data"])
+        return convert_to_standard_types(response)
     else:
         raise HTTPException(
             status_code=response["status_code"],
