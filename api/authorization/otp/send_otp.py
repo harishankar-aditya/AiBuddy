@@ -16,11 +16,11 @@ load_dotenv()
 
 
 # Connect to the EMAIL server
-mailserver = smtplib.SMTP_SSL('smtpout.secureserver.net', 465)
-mailserver.ehlo()  # Say hello to the server
-sender_email = os.getenv("adminEmail", "")
-password = os.getenv("adminPassword", "")
-mailserver.login(sender_email, password)
+# mailserver = smtplib.SMTP_SSL('smtpout.secureserver.net', 465)
+# mailserver.ehlo()  # Say hello to the server
+# sender_email = os.getenv("adminEmail", "")
+# password = os.getenv("adminPassword", "")
+# mailserver.login(sender_email, password)
 
 
 def fetch_user_data(DB_conn, email):
@@ -72,6 +72,12 @@ def send_otp_to_email(username, email: str, otp: str, request_id: str):
     """
     Sends an OTP to the specified email address.
     """
+    mailserver = smtplib.SMTP_SSL('smtpout.secureserver.net', 465)
+    mailserver.ehlo()  # Say hello to the server
+    sender_email = os.getenv("adminEmail", "")
+    password = os.getenv("adminPassword", "")
+    mailserver.login(sender_email, password)
+
     try:
         response = {
             "status_code": 400,
@@ -491,7 +497,7 @@ def send_otp_to_email(username, email: str, otp: str, request_id: str):
         mailserver.sendmail(sender_email, receiver_email, msg.as_string())
 
         # Disconnect from the server
-        # mailserver.quit()
+        mailserver.quit()
 
         logging.info("Email sent successfully!")
     
